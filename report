@@ -36,6 +36,19 @@ textarea{
     font-size:18px;
     font-weight:bold;
 }
+.dark {
+    background: #121212;
+    color: white;
+}
+
+.dark .container {
+    background: #1f1f1f;
+}
+
+.dark textarea {
+    background: #2a2a2a;
+    color: white;
+}
 </style>
 </head>
 
@@ -51,6 +64,14 @@ placeholder="ここにレポートを貼り付けてください"
 oninput="countText()"
 ></textarea>
 
+<button onclick="copyText()">
+コピー
+</button>
+
+<button onclick="toggleDarkMode()">
+ダークモード切替
+</button>
+
 <div class="result" id="result">
 文字数: 0
 </div>
@@ -58,27 +79,85 @@ oninput="countText()"
 </div>
 
 <script>
+// ページを開いた時に保存データを読み込む
+window.onload = function () {
 
-function countText(){
+    const savedText =
+        localStorage.getItem("reportText");
+
+    if (savedText) {
+        document.getElementById("text").value =
+            savedText;
+        countText();
+    }
+
+    // ダークモード状態を復元
+    const darkMode =
+        localStorage.getItem("darkMode");
+
+    if (darkMode === "true") {
+        document.body.classList.add("dark");
+    }
+};
+
+// 文字数カウント
+function countText() {
 
     const text =
         document.getElementById("text").value;
+
+    // 自動保存
+    localStorage.setItem(
+        "reportText",
+        text
+    );
 
     // 改行込み
     const totalCount =
         text.length;
 
-    // 改行を除外
+    // 改行除外
     const noNewlineCount =
-        text.replace(/\n/g,"").length;
+        text.replace(/\n/g, "").length;
+
+    // 空白除外
+    const noSpaceCount =
+        text.replace(/\s/g, "").length;
+
+    // 原稿用紙換算
+    const manuscript =
+        (noSpaceCount / 400).toFixed(2);
 
     document.getElementById("result").innerHTML =
         `
         文字数(改行込み): ${totalCount}<br>
-        文字数(改行なし): ${noNewlineCount}
+        文字数(改行なし): ${noNewlineCount}<br>
+        空白除外文字数: ${noSpaceCount}<br>
+        原稿用紙換算: ${manuscript}枚
         `;
 }
 
+// コピー機能
+function copyText() {
+
+    const text =
+        document.getElementById("text").value;
+
+    navigator.clipboard.writeText(text);
+
+    alert("コピーしました");
+}
+
+// ダークモード切替
+function toggleDarkMode() {
+
+    document.body.classList.toggle("dark");
+
+    localStorage.setItem(
+        "darkMode",
+        document.body.classList.contains("dark")
+    );
+}
 </script>
 
 </body>
