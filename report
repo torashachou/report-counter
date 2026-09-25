@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>レポート文字数カウンター</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background:#f4f4f4;
+    margin:0;
+    padding:20px;
+}
+
+.container{
+    max-width:800px;
+    margin:auto;
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+textarea{
+    width:100%;
+    height:300px;
+    padding:10px;
+    box-sizing:border-box;
+    font-size:16px;
+    resize:vertical;
+}
+
+.result{
+    margin-top:20px;
+    font-size:18px;
+    font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>レポート文字数カウンター</h1>
+
+<textarea
+id="text"
+placeholder="ここにレポートを貼り付けてください"
+oninput="countText()"
+></textarea>
+
+<div class="result" id="result">
+文字数: 0
+</div>
+
+</div>
+
+<script>
+
+function countText(){
+
+    const text =
+        document.getElementById("text").value;
+
+    // 改行込み
+    const totalCount =
+        text.length;
+
+    // 改行を除外
+    const noNewlineCount =
+        text.replace(/\n/g,"").length;
+
+    document.getElementById("result").innerHTML =
+        `
+        文字数(改行込み): ${totalCount}<br>
+        文字数(改行なし): ${noNewlineCount}
+        `;
+}
+
+</script>
+
+</body>
+</html>
