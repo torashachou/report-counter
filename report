@@ -6,6 +6,7 @@
 <title>レポート文字数カウンター</title>
 
 <style>
+
 body{
     font-family: Arial, sans-serif;
     background:#f4f4f4;
@@ -36,19 +37,38 @@ textarea{
     font-size:18px;
     font-weight:bold;
 }
-.dark {
-    background: #121212;
-    color: white;
+
+button{
+    width:100%;
+    padding:10px;
+    margin-top:10px;
+    font-size:16px;
+    cursor:pointer;
 }
 
-.dark .container {
-    background: #1f1f1f;
+/* ダークモード */
+
+.dark{
+    background:#121212;
+    color:white;
 }
 
-.dark textarea {
-    background: #2a2a2a;
-    color: white;
+.dark .container{
+    background:#1f1f1f;
 }
+
+.dark textarea{
+    background:#2a2a2a;
+    color:white;
+    border:1px solid #555;
+}
+
+.dark button{
+    background:#333;
+    color:white;
+    border:1px solid #555;
+}
+
 </style>
 </head>
 
@@ -60,7 +80,7 @@ textarea{
 
 <textarea
 id="text"
-placeholder="ここにレポートを貼り付けてください"
+placeholder="ここにレポートを入力または貼り付けてください"
 oninput="countText()"
 ></textarea>
 
@@ -73,35 +93,42 @@ oninput="countText()"
 </button>
 
 <div class="result" id="result">
-文字数: 0
+
+文字数(改行込み): 0<br>
+文字数(改行なし): 0<br>
+空白除外文字数: 0<br>
+原稿用紙換算: 0枚
+
 </div>
 
 </div>
 
 <script>
-// ページを開いた時に保存データを読み込む
-window.onload = function () {
+
+// ページを開いた時
+window.onload = function(){
 
     const savedText =
         localStorage.getItem("reportText");
 
-    if (savedText) {
+    if(savedText){
+
         document.getElementById("text").value =
             savedText;
+
         countText();
     }
 
-    // ダークモード状態を復元
     const darkMode =
         localStorage.getItem("darkMode");
 
-    if (darkMode === "true") {
+    if(darkMode === "true"){
         document.body.classList.add("dark");
     }
 };
 
 // 文字数カウント
-function countText() {
+function countText(){
 
     const text =
         document.getElementById("text").value;
@@ -112,19 +139,15 @@ function countText() {
         text
     );
 
-    // 改行込み
     const totalCount =
         text.length;
 
-    // 改行除外
     const noNewlineCount =
-        text.replace(/\n/g, "").length;
+        text.replace(/\n/g,"").length;
 
-    // 空白除外
     const noSpaceCount =
-        text.replace(/\s/g, "").length;
+        text.replace(/\s/g,"").length;
 
-    // 原稿用紙換算
     const manuscript =
         (noSpaceCount / 400).toFixed(2);
 
@@ -137,19 +160,24 @@ function countText() {
         `;
 }
 
-// コピー機能
-function copyText() {
+// コピー
+function copyText(){
 
     const text =
         document.getElementById("text").value;
+
+    if(text === ""){
+        alert("文章がありません");
+        return;
+    }
 
     navigator.clipboard.writeText(text);
 
     alert("コピーしました");
 }
 
-// ダークモード切替
-function toggleDarkMode() {
+// ダークモード
+function toggleDarkMode(){
 
     document.body.classList.toggle("dark");
 
@@ -158,6 +186,7 @@ function toggleDarkMode() {
         document.body.classList.contains("dark")
     );
 }
+
 </script>
 
 </body>
